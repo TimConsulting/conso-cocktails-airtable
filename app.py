@@ -66,10 +66,16 @@ st.title("🍸 Cocktail Manager")
 st.write("Calcul automatique des besoins et stocks")
 
 if not df_recettes.empty:
-    # On cherche la colonne du nom du cocktail (souvent 'Nom' ou 'Name')
+    # 1. On identifie la colonne du nom
     col_nom_cocktail = 'Nom' if 'Nom' in df_recettes.columns else df_recettes.columns[0]
     
-    choix_cocktail = st.selectbox("Quel cocktail préparez-vous ?", sorted(df_recettes[col_nom_cocktail].unique()))
+    # 2. NETTOYAGE : On enlève les valeurs vides (NaN) pour éviter l'erreur de tri
+    liste_noms = df_recettes[col_nom_cocktail].dropna().unique()
+    
+    # 3. TRI : On trie maintenant que c'est propre
+    cocktails_tries = sorted(liste_noms)
+    
+    choix_cocktail = st.selectbox("Quel cocktail préparez-vous ?", cocktails_tries)
     pax = st.number_input("Nombre d'invités (PAX)", min_value=1, value=50, step=1)
 
     if st.button("CALCULER MA LISTE"):
